@@ -27,11 +27,12 @@ model Driver {
   longitude  Float?
   status     String
 
-  user User @relation(fields: [userId], references: [id])
+  user  User   @relation(fields: [userId], references: [id])
+  rides Ride[]
 }
 
 model Ride {
-  id              Int     @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
 
   passengerId     Int
   driverId        Int?
@@ -47,4 +48,22 @@ model Ride {
   fare            Float?
 
   status          String
+
+  paymentStatus   String   @default("PENDING")
+  paymentId       String?
+
+  driver          Driver?  @relation(fields: [driverId], references: [id])
+}
+
+model Review {
+  id           Int      @id @default(autoincrement())
+
+  rating       Int
+  review       String
+
+  rideId       Int
+  passengerId  Int
+  driverId     Int
+
+  createdAt    DateTime @default(now())
 }

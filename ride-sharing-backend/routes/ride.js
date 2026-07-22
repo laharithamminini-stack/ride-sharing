@@ -6,6 +6,7 @@ const roleMiddleware = require("../middleware/roleMiddleware");
 
 const router = express.Router();
 
+
 // ================= REQUEST RIDE =================
 router.post(
   "/request",
@@ -19,15 +20,27 @@ router.post(
         rideType,
         pickupLat,
         pickupLng,
+        destinationLat,
+        destinationLng,
+        distance,
+        duration,
+        fare,
       } = req.body;
 
       const ride = await prisma.ride.create({
         data: {
           passengerId: req.user.id,
+
           pickupLat: Number(pickupLat),
           pickupLng: Number(pickupLng),
-          destinationLat: 0,
-          destinationLng: 0,
+
+          destinationLat: Number(destinationLat),
+          destinationLng: Number(destinationLng),
+
+          distance: Number(distance),
+          duration: Number(duration),
+          fare: Number(fare),
+
           status: "PENDING",
         },
       });
@@ -46,7 +59,6 @@ router.post(
     }
   }
 );
-
 // ================= MY RIDES =================
 router.get(
   "/my-rides",
@@ -57,6 +69,13 @@ router.get(
       const rides = await prisma.ride.findMany({
         where: {
           passengerId: req.user.id,
+        },
+        include: {
+          driver: {
+            include: {
+              user: true,
+            },
+          },
         },
         orderBy: {
           id: "desc",

@@ -65,6 +65,19 @@ function PassengerDashboard() {
       <br />
 
       <button
+        onClick={() => navigate("/ride-details")}
+        style={{
+          width: "250px",
+          padding: "12px",
+          marginBottom: "15px",
+        }}
+      >
+        🚖 Ride Details
+      </button>
+
+      <br />
+
+      <button
         onClick={() => navigate("/profile")}
         style={{
           width: "250px",
@@ -86,6 +99,7 @@ function PassengerDashboard() {
           color: "white",
           border: "none",
           borderRadius: "5px",
+          cursor: "pointer",
         }}
       >
         🚪 Logout

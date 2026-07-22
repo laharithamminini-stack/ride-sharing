@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import api from "../services/api";
 
@@ -18,25 +19,45 @@ function MyRides() {
         },
       });
 
-      setRides(response.data);
+      setRides(response.data.rides);
     } catch (error) {
+      console.log(error);
       alert("Failed to load rides");
     }
   };
 
   return (
-    <div style={{ padding: "30px" }}>
-      <h1>My Rides</h1>
+    <div
+      style={{
+        width: "1000px",
+        margin: "40px auto",
+        textAlign: "center",
+      }}
+    >
+      <h1>🚖 My Rides</h1>
 
       {rides.length === 0 ? (
-        <p>No rides found.</p>
+        <h3>No rides found.</h3>
       ) : (
-        <table border="1" cellPadding="10">
+        <table
+          border="1"
+          cellPadding="10"
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+          }}
+        >
+
           <thead>
             <tr>
               <th>ID</th>
               <th>Status</th>
-              <th>Passenger ID</th>
+              <th>Distance</th>
+              <th>Duration</th>
+              <th>Fare</th>
+              <th>Driver</th>
+              <th>Vehicle</th>
+              <th>Action</th>
             </tr>
           </thead>
 
@@ -44,8 +65,38 @@ function MyRides() {
             {rides.map((ride) => (
               <tr key={ride.id}>
                 <td>{ride.id}</td>
+
                 <td>{ride.status}</td>
-                <td>{ride.passengerId}</td>
+
+                <td>
+                  {ride.distance ? `${ride.distance} km` : "-"}
+                </td>
+
+                <td>
+                  {ride.duration ? `${ride.duration} min` : "-"}
+                </td>
+
+                <td>
+                  {ride.fare ? `₹${ride.fare}` : "-"}
+                </td>
+
+                <td>
+                  {ride.driver?.user?.name || "Not Assigned"}
+                </td>
+
+                <td>
+                  {ride.driver?.vehicleNo || "-"}
+                </td>
+
+                <td>
+                  <button
+                    onClick={() =>
+                      (window.location.href = `/ride-details/${ride.id}`)
+                    }
+                  >
+                    View Details
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>

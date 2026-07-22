@@ -1,8 +1,9 @@
 
-import { useEffect } from "react";
-import { useMap } from "react-leaflet";
+import { useEffect, useState } from "react";
+import { useMap, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet-routing-machine";
+import socket from "../services/socket";
 
 function RouteMap({
     pickupPosition,
@@ -12,6 +13,22 @@ function RouteMap({
 }) {
     const map = useMap();
 
+    const [driverLocation, setDriverLocation] = useState(null);
+
+    // Listen for live driver location
+    useEffect(() => {
+        socket.on("updateDriverLocation", (data) => {
+            console.log("📍 Driver Location:", data);
+
+            setDriverLocation([data.latitude, data.longitude]);
+        });
+
+        return () => {
+            socket.off("updateDriverLocation");
+        };
+    }, []);
+
+    // Draw route and calculate distance/time
     useEffect(() => {
         if (!pickupPosition || !destinationPosition) return;
 
@@ -27,14 +44,16 @@ function RouteMap({
             show: false,
         }).addTo(map);
 
-        routingControl.on("routesfound", function (e) {
+        routingControl.on("routesfound", (e) => {
             const route = e.routes[0];
 
-            // Distance in km
-            const distanceKm = (route.summary.totalDistance / 1000).toFixed(2);
+            const distanceKm = (
+                route.summary.totalDistance / 1000
+            ).toFixed(2);
 
-            // Time in minutes
-            const durationMin = Math.ceil(route.summary.totalTime / 60);
+            const durationMin = Math.ceil(
+                route.summary.totalTime / 60
+            );
 
             setDistance(distanceKm);
             setDuration(durationMin);
@@ -51,7 +70,15 @@ function RouteMap({
         setDuration,
     ]);
 
-    return null;
+    return (
+        <>
+            {driverLocation && (
+                <Marker position={driverLocation}>
+                    <Popup>🚗 Driver Live Location</Popup>
+                </Marker>
+            )}
+        </>
+    );
 }
 
 export default RouteMap;

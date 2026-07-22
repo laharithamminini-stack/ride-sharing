@@ -8,7 +8,7 @@ import PassengerDashboard from "./pages/PassengerDashboard";
 import RequestRide from "./pages/RequestRide";
 import MyRides from "./pages/MyRides";
 import RideHistory from "./pages/RideHistory";
-
+import RideDetails from "./pages/RideDetails";
 import DriverDashboard from "./pages/DriverDashboard";
 import AvailableRides from "./pages/AvailableRides";
 
@@ -25,7 +25,10 @@ function App() {
         <Route path="/request-ride" element={<RequestRide />} />
         <Route path="/my-rides" element={<MyRides />} />
         <Route path="/ride-history" element={<RideHistory />} />
-
+        <Route
+          path="/ride-details/:id"
+          element={<RideDetails />}
+        />
         {/* Driver */}
         <Route
           path="/driver-dashboard"

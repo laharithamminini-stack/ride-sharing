@@ -1,12 +1,26 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import api from "../services/api";
+import socket from "../services/socket";
 
 function AvailableRides() {
   const [rides, setRides] = useState([]);
+  const watchId = useRef(null);
 
   useEffect(() => {
     fetchAvailableRides();
+
+    socket.on("updateDriverLocation", (data) => {
+      console.log("📍 Driver Location:", data);
+    });
+
+    return () => {
+      socket.off("updateDriverLocation");
+
+      if (watchId.current !== null) {
+        navigator.geolocation.clearWatch(watchId.current);
+      }
+    };
   }, []);
 
   const fetchAvailableRides = async () => {
@@ -18,12 +32,65 @@ function AvailableRides() {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("API Response:", response.data);
 
       setRides(response.data.rides);
     } catch (error) {
       console.log(error);
       alert("Failed to load available rides");
+    }
+  };
+
+  const startLocationTracking = () => {
+    const token = localStorage.getItem("token");
+
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported.");
+      return;
+    }
+
+    watchId.current = navigator.geolocation.watchPosition(
+      async (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        // Send live location through Socket.IO
+        socket.emit("driverLocation", {
+          latitude,
+          longitude,
+        });
+
+        // Save location in database
+        try {
+          await api.put(
+            "/driver/location",
+            {
+              latitude,
+              longitude,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+        } catch (err) {
+          console.log(err);
+        }
+      },
+      (error) => {
+        console.log(error);
+      },
+      {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+      }
+    );
+  };
+
+  const stopLocationTracking = () => {
+    if (watchId.current !== null) {
+      navigator.geolocation.clearWatch(watchId.current);
+      watchId.current = null;
     }
   };
 
@@ -42,7 +109,6 @@ function AvailableRides() {
       );
 
       alert("Ride Accepted Successfully!");
-
       fetchAvailableRides();
     } catch (error) {
       console.log(error);
@@ -63,6 +129,8 @@ function AvailableRides() {
           },
         }
       );
+
+      startLocationTracking();
 
       alert("Ride Started Successfully!");
 
@@ -87,6 +155,8 @@ function AvailableRides() {
         }
       );
 
+      stopLocationTracking();
+
       alert("Ride Completed Successfully!");
 
       fetchAvailableRides();
@@ -104,7 +174,7 @@ function AvailableRides() {
         textAlign: "center",
       }}
     >
-      <h1>Available Rides</h1>
+      <h1>🚖 Available Rides</h1>
 
       {rides.length === 0 ? (
         <h3>No rides available</h3>

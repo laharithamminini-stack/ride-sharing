@@ -5,6 +5,8 @@ const cors = require("cors");
 const authRoutes = require("./routes/auth");
 const driverRoutes = require("./routes/driver");
 const rideRoutes = require("./routes/ride");
+const paymentRoutes = require("./routes/payment");
+const reviewRoutes = require("./routes/review");
 
 const app = express();
 
@@ -20,7 +22,7 @@ app.get("/", (req, res) => {
 // Test Route
 app.get("/hello", (req, res) => {
   res.json({
-    message: "Hello from server"
+    message: "Hello from server",
   });
 });
 
@@ -28,10 +30,12 @@ app.get("/hello", (req, res) => {
 app.use("/auth", authRoutes);
 app.use("/driver", driverRoutes);
 app.use("/ride", rideRoutes);
+app.use("/payment", paymentRoutes);
+app.use("/review", reviewRoutes);
 
 // Start Server
 const PORT = 5000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
