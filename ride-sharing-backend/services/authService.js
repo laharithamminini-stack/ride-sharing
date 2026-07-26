@@ -3,7 +3,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const prisma = require("../lib/prisma");
 
-const JWT_SECRET = "mysecretkey";
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // ================= REGISTER =================
 exports.register = async (data) => {
