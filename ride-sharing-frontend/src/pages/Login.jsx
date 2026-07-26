@@ -33,79 +33,81 @@ function Login() {
       } else {
         navigate("/dashboard");
       }
-    } catch (error) {
-      console.log(error);
+    }
+    catch (error) {
+      console.log("Full Error:", error);
 
       if (error.response) {
         alert(error.response.data.message);
+      } else if (error.request) {
+        alert("No response from backend");
       } else {
-        alert("Cannot connect to backend server");
+        alert(error.message);
       }
     }
-  };
 
-  return (
-    <div
-      style={{
-        width: "400px",
-        margin: "80px auto",
-        padding: "30px",
-        border: "1px solid #ccc",
-        borderRadius: "10px",
-        textAlign: "center",
-      }}
-    >
-      <h1>🚖 Ride Sharing</h1>
-      <h2>Login</h2>
-
-      <input
-        type="email"
-        placeholder="Enter Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+    return (
+      <div
         style={{
-          width: "100%",
-          padding: "10px",
-          marginBottom: "15px",
-        }}
-      />
-
-      <input
-        type="password"
-        placeholder="Enter Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        style={{
-          width: "100%",
-          padding: "10px",
-          marginBottom: "20px",
-        }}
-      />
-
-      <button
-        onClick={handleLogin}
-        style={{
-          width: "100%",
-          padding: "10px",
-          marginBottom: "15px",
-          cursor: "pointer",
+          width: "400px",
+          margin: "80px auto",
+          padding: "30px",
+          border: "1px solid #ccc",
+          borderRadius: "10px",
+          textAlign: "center",
         }}
       >
-        Login
-      </button>
+        <h1>🚖 Ride Sharing</h1>
+        <h2>Login</h2>
 
-      <button
-        onClick={() => navigate("/register")}
-        style={{
-          width: "100%",
-          padding: "10px",
-          cursor: "pointer",
-        }}
-      >
-        Register
-      </button>
-    </div>
-  );
-}
+        <input
+          type="email"
+          placeholder="Enter Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "10px",
+            marginBottom: "15px",
+          }}
+        />
 
-export default Login;
+        <input
+          type="password"
+          placeholder="Enter Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "10px",
+            marginBottom: "20px",
+          }}
+        />
+
+        <button
+          onClick={handleLogin}
+          style={{
+            width: "100%",
+            padding: "10px",
+            marginBottom: "15px",
+            cursor: "pointer",
+          }}
+        >
+          Login
+        </button>
+
+        <button
+          onClick={() => navigate("/register")}
+          style={{
+            width: "100%",
+            padding: "10px",
+            cursor: "pointer",
+          }}
+        >
+          Register
+        </button>
+      </div>
+    );
+  }
+
+  export default Login;
