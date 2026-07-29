@@ -31,8 +31,12 @@ function Login() {
       } else {
         navigate("/dashboard");
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.log("Full Error:", error);
+      console.log("Response:", error.response);
+      console.log("Request:", error.request);
+      console.log("Message:", error.message);
 
       if (error.response) {
         alert(error.response.data.message);
