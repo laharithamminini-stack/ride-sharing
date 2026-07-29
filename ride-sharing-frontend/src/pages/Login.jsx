@@ -31,8 +31,7 @@ function Login() {
       } else {
         navigate("/dashboard");
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.log("Full Error:", error);
       console.log("Response:", error.response);
       console.log("Request:", error.request);
@@ -87,7 +86,10 @@ function Login() {
       />
 
       <button
-        onClick={handleLogin}
+        onClick={() => {
+          alert("Login button clicked");
+          handleLogin();
+        }}
         style={{
           width: "100%",
           padding: "10px",
