@@ -1,9 +1,11 @@
 
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 
 function MyRides() {
   const [rides, setRides] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchRides();
@@ -47,7 +49,6 @@ function MyRides() {
             borderCollapse: "collapse",
           }}
         >
-
           <thead>
             <tr>
               <th>ID</th>
@@ -90,9 +91,11 @@ function MyRides() {
 
                 <td>
                   <button
-                    onClick={() =>
-                      (window.location.href = `/ride-details/${ride.id}`)
-                    }
+                    onClick={() => navigate(`/ride-details/${ride.id}`)}
+                    style={{
+                      padding: "8px 15px",
+                      cursor: "pointer",
+                    }}
                   >
                     View Details
                   </button>
